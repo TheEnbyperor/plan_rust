@@ -1,0 +1,12 @@
+[package]
+name = "plan-rust"
+version = "0.1.0"
+authors = ["Q <q@misell.cymru>"]
+
+[dependencies]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
