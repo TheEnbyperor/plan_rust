@@ -9,12 +9,15 @@ pub struct AreaFrameAllocator<'a> {
     areas: MemoryAreaIter<'a>,
     kernel_start: PhysFrame,
     kernel_end: PhysFrame,
+    modules_start: PhysFrame,
+    modules_end: PhysFrame,
     multiboot_start: PhysFrame,
     multiboot_end: PhysFrame,
 }
 
 impl AreaFrameAllocator<'_> {
     pub fn new(kernel_start: PhysAddr, kernel_end: PhysAddr,
+               modules_start: PhysAddr, modules_end: PhysAddr,
                multiboot_start: PhysAddr, multiboot_end: PhysAddr,
                memory_areas: MemoryAreaIter) -> AreaFrameAllocator
     {
@@ -24,6 +27,8 @@ impl AreaFrameAllocator<'_> {
             areas: memory_areas,
             kernel_start: PhysFrame::containing_address(kernel_start),
             kernel_end: PhysFrame::containing_address(kernel_end),
+            modules_start: PhysFrame::containing_address(modules_start),
+            modules_end: PhysFrame::containing_address(modules_end),
             multiboot_start: PhysFrame::containing_address(multiboot_start),
             multiboot_end: PhysFrame::containing_address(multiboot_end),
         };
@@ -68,6 +73,9 @@ unsafe impl FrameAllocator<Size4KiB> for AreaFrameAllocator<'_> {
                 } else if frame >= self.kernel_start && frame <= self.kernel_end {
                     // `frame` is used by the kernel
                     self.next_free_frame = self.kernel_end.clone() + 1;
+                }  else if frame >= self.modules_start && frame <= self.modules_end {
+                    // `frame` is used by a module
+                    self.next_free_frame = self.modules_end.clone() + 1;
                 } else if frame >= self.multiboot_start && frame <= self.multiboot_end {
                     // `frame` is used by the multiboot information structure
                     self.next_free_frame = self.multiboot_end.clone() + 1;

@@ -20,9 +20,12 @@ pub mod vga;
 pub mod interrupts;
 pub mod memory;
 pub mod gdt;
+pub mod tar;
+pub mod initrd;
 
 use core::panic::PanicInfo;
 use memory::heap_allocator::Allocator;
+use initrd::InitRD;
 
 pub fn hlt_loop() -> ! {
     loop {
@@ -44,6 +47,7 @@ fn alloc_error(info: core::alloc::Layout) -> ! {
 
 pub const HEAP_START: usize = 0o_000_001_000_000_0000;
 pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB
+pub const INITRD_START: usize = 0o_000_002_000_000_0000;
 
 #[global_allocator]
 static HEAP_ALLOCATOR: Allocator = Allocator::empty();
@@ -68,11 +72,11 @@ fn enable_write_protect_bit() {
     };
 }
 
-pub fn init(multiboot_information_p: usize) {
+pub fn init(multiboot_information_p: usize) -> initrd::InitRD {
     vga::WRITER.lock().clear_screen();
     println!("Starting planRust");
     let boot_info = unsafe { multiboot2::load(multiboot_information_p) };
-    memory::init(boot_info);
+    let init_rd = memory::init(boot_info);
     unsafe {
         HEAP_ALLOCATOR.lock().init(HEAP_START, HEAP_START + HEAP_SIZE);
     }
@@ -80,6 +84,7 @@ pub fn init(multiboot_information_p: usize) {
     interrupts::init_idt();
     unsafe { interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
+    init_rd
 }
 
 #[no_mangle]
@@ -96,7 +101,9 @@ pub extern "C" fn rust_start(multiboot_information_p: usize) -> ! {
     enable_nxe_bit();
     enable_write_protect_bit();
 
-    init(multiboot_information_p);
+    let init_rd = init(multiboot_information_p);
+    init_rd.dump();
+
 
     println!("It did not crash");
     hlt_loop();

@@ -13,9 +13,10 @@ use x86_64::structures::paging::page::Size4KiB;
 use x86_64::structures::paging::{PhysFrame, Page, PageSize, PageTableFlags, FrameAllocator, Mapper};
 use multiboot2::ElfSectionFlags;
 use crate::println;
+use crate::initrd;
 use core::convert::TryInto;
 
-pub fn init(boot_info: BootInformation) {
+pub fn init(boot_info: BootInformation) -> initrd::InitRD {
     assert_has_not_been_called!("memory::init must be called only once");
 
     let memory_map_tag = boot_info.memory_map_tag()
@@ -32,19 +33,32 @@ pub fn init(boot_info: BootInformation) {
         .map(|s| s.start_address() + s.size())
         .max().unwrap();
 
+    let modules_start = boot_info.module_tags()
+        .map(|s| s.start_address())
+        .min().unwrap();
+    let modules_end = boot_info.module_tags()
+        .map(|s| s.end_address())
+        .max().unwrap();
+
     println!("kernel start: {:#x}, kernel end: {:#x}",
         kernel_start, kernel_end);
+    println!("modules start: {:#x}, modules end: {:#x}",
+        modules_start, modules_end);
     println!("multiboot start: {:#x}, multiboot end: {:#x}",
         boot_info.start_address(), boot_info.end_address());
 
+    let mut modules = boot_info.module_tags();
+    let initrd = modules.next().expect("initrd module not in multiboot info");
+
     let mut frame_allocator = AreaFrameAllocator::new(
         PhysAddr::new(kernel_start), PhysAddr::new(kernel_end),
+        PhysAddr::new(modules_start.into()), PhysAddr::new(modules_end.into()),
         PhysAddr::new(boot_info.start_address() as u64), PhysAddr::new(boot_info.end_address() as u64),
         memory_map_tag.memory_areas());
 
     let mut active_table = remap_the_kernel(&mut frame_allocator, &boot_info);
 
-    use {HEAP_START, HEAP_SIZE};
+    use {HEAP_START, HEAP_SIZE, INITRD_START};
 
     let heap_start_page =
         Page::containing_address(VirtAddr::new(HEAP_START.try_into().unwrap()));
@@ -59,6 +73,29 @@ pub fn init(boot_info: BootInformation) {
                 .expect("failed to map heap page").flush();
         }
     }
+
+    let initrd_size = (initrd.end_address() - initrd.start_address()) as usize;
+    let initrd_start_page =
+        Page::containing_address(VirtAddr::new(INITRD_START.try_into().unwrap()));
+    let initrd_end_page =
+        Page::containing_address(VirtAddr::new((INITRD_START + initrd_size-1)
+            .try_into().unwrap()));
+
+    let initrd_start_frame = PhysFrame::<Size4KiB>::containing_address(PhysAddr::new(initrd.start_address() as u64));
+    let initrd_end_frame = PhysFrame::<Size4KiB>::containing_address(PhysAddr::new((initrd.end_address() - 1) as u64));
+    let mut initrd_phys_frames = PhysFrame::range_inclusive(initrd_start_frame, initrd_end_frame);
+    for page in Page::range_inclusive(initrd_start_page, initrd_end_page) {
+        let frame = initrd_phys_frames.next().expect("failed to get phys frame for initrd virt page");
+        unsafe {
+            active_table.map_to(page, frame, PageTableFlags::PRESENT, &mut frame_allocator)
+                .expect("failed to map initrd page").flush();
+        }
+    }
+
+    initrd::InitRD::new(
+        initrd_start_page.start_address(),
+        initrd_start_page.start_address() + initrd_size
+    )
 }
 
 pub fn remap_the_kernel<'a, A>(allocator: &mut A, boot_info: &BootInformation)
