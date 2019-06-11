@@ -111,7 +111,7 @@ pub extern "C" fn rust_start(multiboot_information_p: usize) -> ! {
     let mut init_rd_server = initrd::InitRDServer::new("/", "initrd", init_rd);
 
     println!("{:?}", init_rd_server.auth(1, "q", ""));
-    println!("{:?}", init_rd_server.attach(1, 0, "q", ""));
+    println!("{:?}", init_rd_server.attach(1, nine_p::NO_FID, "q", ""));
     println!("{:?}", init_rd_server.open(1, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
 
     println!("It did not crash");

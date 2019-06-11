@@ -87,6 +87,12 @@ impl nine_p::NinePServer for InitRDServer {
         Ok(qid)
     }
 
+    fn clunk(&mut self, fid: nine_p::Fid) -> nine_p::Result<()> {
+        self.files.remove(&fid);
+        self.session_fid.remove(&fid);
+        Ok(())
+    }
+
     fn open(&self, fid: nine_p::Fid, mode: &nine_p::FileMode) -> nine_p::Result<()> {
         if !self.files.contains_key(&fid) {
             return Err(nine_p::DevError::NoFid);
@@ -96,15 +102,19 @@ impl nine_p::NinePServer for InitRDServer {
             return Err(nine_p::DevError::NoFid);
         }
 
+        if mode.remove_on_close() {
+            return Err(nine_p::DevError::PermissionDenied)
+        }
+
         let file = self.files.get(&fid).unwrap();
         let qid = self.qid_pool.get(file.name()).unwrap();
 
         if qid.qid_type().contains(nine_p::qidpool::QidType::DIRECTORY) {
-            if mode.truncate() || mode.remove_on_clone() {
-                return Err(nine_p::DevError::PermissionDenied)
+            if mode.truncate() || mode.remove_on_close() {
+                return Err(nine_p::DevError::PermissionDenied);
             }
             if mode.access() != nine_p::FileAccessMode::Read {
-                return Err(nine_p::DevError::PermissionDenied)
+                return Err(nine_p::DevError::PermissionDenied);
             }
 
             unimplemented!();
@@ -113,12 +123,14 @@ impl nine_p::NinePServer for InitRDServer {
         }
     }
 
-    fn close(&self) -> nine_p::Result<()> {
-        Ok(())
-    }
-
     fn read(&self, _nbytes: usize) -> nine_p::Result<&[u8]> {
         Ok(&[0][..])
+    }
+
+    fn remove(&mut self, fid: nine_p::Fid) -> nine_p::Result<()> {
+        self.files.remove(&fid);
+        self.session_fid.remove(&fid);
+        Err(nine_p::DevError::PermissionDenied)
     }
 
     fn stat(&self) -> nine_p::Result<()> {

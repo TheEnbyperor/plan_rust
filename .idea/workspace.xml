@@ -8,16 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79afd78b-68f4-44e2-ba6a-9e18dd2e04b1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/nine_p/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nine_p/qidpool.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kernel-x86_64.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/kernel-x86_64.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/os-x86_64.iso" beforeDir="false" afterPath="$PROJECT_DIR$/build/os-x86_64.iso" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/initrd.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/initrd.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tar/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tar/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nine_p/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/nine_p/mod.rs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,27 +38,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="884">
-              <caret line="114" column="95" selection-start-line="114" selection-start-column="95" selection-end-line="114" selection-end-column="95" />
+            <state relative-caret-position="380">
+              <caret line="78" column="50" lean-forward="true" selection-start-line="78" selection-start-column="50" selection-end-line="78" selection-end-column="50" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/initrd.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="93" selection-start-line="93" selection-end-line="93" />
+            <state relative-caret-position="926">
+              <caret line="132" column="46" selection-start-line="132" selection-start-column="46" selection-end-line="132" selection-end-column="46" />
               <folding>
                 <element signature="e#1290#1291#0" expanded="true" />
                 <element signature="e#1314#1315#0" expanded="true" />
                 <element signature="e#1359#1360#0" expanded="true" />
                 <element signature="e#1390#1391#0" expanded="true" />
-                <element signature="e#1988#1989#0" expanded="true" />
-                <element signature="e#2009#2010#0" expanded="true" />
                 <element signature="e#2072#2073#0" expanded="true" />
                 <element signature="e#2099#2100#0" expanded="true" />
                 <element signature="e#2143#2144#0" expanded="true" />
@@ -78,8 +69,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/nine_p/mod.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="69" column="11" selection-start-line="69" selection-start-column="11" selection-end-line="69" selection-end-column="11" />
+            <state relative-caret-position="870">
+              <caret line="136" selection-start-line="136" selection-end-line="136" />
               <folding>
                 <element signature="e#1129#1130#0" expanded="true" />
                 <element signature="e#1154#1155#0" expanded="true" />
@@ -89,12 +80,8 @@
                 <element signature="e#1540#1541#0" expanded="true" />
                 <element signature="e#1585#1586#0" expanded="true" />
                 <element signature="e#1620#1621#0" expanded="true" />
-                <element signature="e#2430#2431#0" expanded="true" />
-                <element signature="e#2476#2477#0" expanded="true" />
                 <element signature="e#2565#2566#0" expanded="true" />
                 <element signature="e#2611#2612#0" expanded="true" />
-                <element signature="e#2648#2649#0" expanded="true" />
-                <element signature="e#2694#2695#0" expanded="true" />
                 <element signature="e#2765#2766#0" expanded="true" />
                 <element signature="e#2811#2812#0" expanded="true" />
               </folding>
@@ -203,9 +190,9 @@
         <option value="$PROJECT_DIR$/src/nine_p.rs" />
         <option value="$PROJECT_DIR$/Cargo.toml" />
         <option value="$PROJECT_DIR$/src/nine_p/qidpool.rs" />
+        <option value="$PROJECT_DIR$/src/lib.rs" />
         <option value="$PROJECT_DIR$/src/nine_p/mod.rs" />
         <option value="$PROJECT_DIR$/src/initrd.rs" />
-        <option value="$PROJECT_DIR$/src/lib.rs" />
       </list>
     </option>
   </component>
@@ -332,12 +319,12 @@
       <workItem from="1560065678556" duration="41613000" />
       <workItem from="1560150906232" duration="21454000" />
       <workItem from="1560181131119" duration="17713000" />
-      <workItem from="1560246130919" duration="13487000" />
+      <workItem from="1560246130919" duration="15813000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94325000" />
+    <option name="totallyTimeSpent" value="96651000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1181" extended-state="6" />
@@ -521,10 +508,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="78" column="50" lean-forward="true" selection-start-line="78" selection-start-column="50" selection-end-line="78" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/nine_p/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="69" column="11" selection-start-line="69" selection-start-column="11" selection-end-line="69" selection-end-column="11" />
+        <state relative-caret-position="870">
+          <caret line="136" selection-start-line="136" selection-end-line="136" />
           <folding>
             <element signature="e#1129#1130#0" expanded="true" />
             <element signature="e#1154#1155#0" expanded="true" />
@@ -534,12 +528,8 @@
             <element signature="e#1540#1541#0" expanded="true" />
             <element signature="e#1585#1586#0" expanded="true" />
             <element signature="e#1620#1621#0" expanded="true" />
-            <element signature="e#2430#2431#0" expanded="true" />
-            <element signature="e#2476#2477#0" expanded="true" />
             <element signature="e#2565#2566#0" expanded="true" />
             <element signature="e#2611#2612#0" expanded="true" />
-            <element signature="e#2648#2649#0" expanded="true" />
-            <element signature="e#2694#2695#0" expanded="true" />
             <element signature="e#2765#2766#0" expanded="true" />
             <element signature="e#2811#2812#0" expanded="true" />
           </folding>
@@ -548,27 +538,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/initrd.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="93" selection-start-line="93" selection-end-line="93" />
+        <state relative-caret-position="926">
+          <caret line="132" column="46" selection-start-line="132" selection-start-column="46" selection-end-line="132" selection-end-column="46" />
           <folding>
             <element signature="e#1290#1291#0" expanded="true" />
             <element signature="e#1314#1315#0" expanded="true" />
             <element signature="e#1359#1360#0" expanded="true" />
             <element signature="e#1390#1391#0" expanded="true" />
-            <element signature="e#1988#1989#0" expanded="true" />
-            <element signature="e#2009#2010#0" expanded="true" />
             <element signature="e#2072#2073#0" expanded="true" />
             <element signature="e#2099#2100#0" expanded="true" />
             <element signature="e#2143#2144#0" expanded="true" />
             <element signature="e#2164#2165#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
-          <caret line="114" column="95" selection-start-line="114" selection-start-column="95" selection-end-line="114" selection-end-column="95" />
         </state>
       </provider>
     </entry>

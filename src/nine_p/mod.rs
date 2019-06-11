@@ -4,6 +4,7 @@ use alloc::borrow::ToOwned;
 use alloc::string::{String, ToString};
 
 pub type Fid = u32;
+pub const NO_FID: Fid = 0;
 
 #[derive(Debug)]
 pub enum DevError {
@@ -85,7 +86,7 @@ impl FileMode {
         self.truncate
     }
 
-    pub fn remove_on_clone(&self) -> bool {
+    pub fn remove_on_close(&self) -> bool {
         self.remove_on_close
     }
 }
@@ -120,9 +121,10 @@ pub trait NinePServer {
     fn auth(&mut self, afid: Fid, uname: &str, aname: &str) -> Result<&qidpool::Qid>;
     fn attach(&mut self, fid: Fid, afid: Fid, uname: &str, aname: &str) -> Result<&qidpool::Qid>;
 
-    fn open(&self, fid: Fid, mode: &FileMode) -> Result<()>;
-    fn close(&self) -> Result<()>;
-    fn create(&self) -> Result<()> {
+    fn clunk(&mut self, fid: Fid) -> Result<()>;
+
+    fn open(&self, fid: Fid, mode: &FileMode) -> Result<(&qidpool::Qid, u32)>;
+    fn create(&self, fid: Fid, name: &str, perm: u32, mode: &FileMode) -> Result<(&qidpool::Qid, u32)> {
         Err(DevError::PermissionDenied)
     }
 
@@ -130,9 +132,8 @@ pub trait NinePServer {
     fn write(&self) -> Result<()> {
         Err(DevError::PermissionDenied)
     }
-    fn remove(&self) -> Result<()> {
-        Err(DevError::PermissionDenied)
-    }
+
+    fn remove(&mut self, fid: Fid) -> Result<()>;
 
     fn stat(&self) -> Result<()>;
     fn wstat(&self) -> Result<()> {
