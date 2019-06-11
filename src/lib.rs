@@ -15,6 +15,9 @@ extern crate pc_keyboard;
 extern crate alloc;
 #[macro_use]
 extern crate once;
+#[macro_use]
+extern crate bitflags;
+extern crate byteorder;
 
 pub mod vga;
 pub mod interrupts;
@@ -22,10 +25,11 @@ pub mod memory;
 pub mod gdt;
 pub mod tar;
 pub mod initrd;
+pub mod nine_p;
 
 use core::panic::PanicInfo;
 use memory::heap_allocator::Allocator;
-use initrd::InitRD;
+use nine_p::NinePServer;
 
 pub fn hlt_loop() -> ! {
     loop {
@@ -104,6 +108,11 @@ pub extern "C" fn rust_start(multiboot_information_p: usize) -> ! {
     let init_rd = init(multiboot_information_p);
     init_rd.dump();
 
+    let mut init_rd_server = initrd::InitRDServer::new("/", "initrd", init_rd);
+
+    println!("{:?}", init_rd_server.auth(1, "q", ""));
+    println!("{:?}", init_rd_server.attach(1, 0, "q", ""));
+    println!("{:?}", init_rd_server.open(1, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
 
     println!("It did not crash");
     hlt_loop();

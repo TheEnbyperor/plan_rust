@@ -1,12 +1,17 @@
 pub mod headers;
+use core::slice;
 use alloc::boxed::Box;
 use alloc::vec::Vec;
-use core::convert::TryInto;
 use alloc::borrow::ToOwned;
 use self::headers::TAR_BLOCKSIZE;
-use crate::println;
 
-pub fn find_headers(data: &[u8]) -> <Box<Vec<usize>> {
+#[derive(Debug)]
+pub struct TarEntry<'a> {
+    header: headers::TarHeader,
+    data: &'a [u8]
+}
+
+pub fn find_headers(data: &[u8]) -> Box<Vec<TarEntry>> {
     if data.len() % (TAR_BLOCKSIZE as usize) != 0 {
         panic!("wrong length for tar file");
     }
@@ -14,7 +19,6 @@ pub fn find_headers(data: &[u8]) -> <Box<Vec<usize>> {
 
     let mut header_blocks = Vec::new();
     let mut contiguous_empty_blocks = 0;
-    let mut block_index = 0;
     while contiguous_empty_blocks < 2 {
         let chunk = data.split_at_mut(TAR_BLOCKSIZE as usize);
         data = chunk.1;
@@ -23,23 +27,25 @@ pub fn find_headers(data: &[u8]) -> <Box<Vec<usize>> {
         chunk_a.copy_from_slice(chunk);
         match read_header(&chunk_a) {
             HeaderReadOutcome::Header(header) => {
-                header_blocks.push(block_index);
                 let mut readcount = 0;
-                block_index += 1;
+                let data_start = data.as_ptr();
                 while readcount < header.size as u64 {
-                    block_index += 1;
                     readcount += TAR_BLOCKSIZE;
                     let chunk = data.split_at_mut(TAR_BLOCKSIZE as usize);
                     data = chunk.1;
-                    let chunk = chunk.0;
                 }
+                let data_slice = unsafe { slice::from_raw_parts(data_start, header.size as usize) };
+                header_blocks.push(TarEntry {
+                    header,
+                    data: data_slice
+                });
             }
             HeaderReadOutcome::Empty => contiguous_empty_blocks += 1,
         }
     }
 
 
-    return Ok(Box::new(header_blocks));
+    return Box::new(header_blocks);
 }
 
 enum HeaderReadOutcome {
