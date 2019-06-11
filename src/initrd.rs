@@ -79,7 +79,7 @@ impl nine_p::NinePServer for InitRDServer {
         };
 
         match self.files.contains_key(&fid) {
-            false => self.files.insert(fid, nine_p::File::new("/", false)),
+            false => self.files.insert(fid, nine_p::File::new("/", false, None)),
             true => return Err(nine_p::DevError::FidInUse)
         };
 
@@ -93,7 +93,7 @@ impl nine_p::NinePServer for InitRDServer {
         Ok(())
     }
 
-    fn open(&self, fid: nine_p::Fid, mode: &nine_p::FileMode) -> nine_p::Result<()> {
+    fn open(&self, fid: nine_p::Fid, mode: &nine_p::FileMode) -> nine_p::Result<(&nine_p::qidpool::Qid, u32)> {
         if !self.files.contains_key(&fid) {
             return Err(nine_p::DevError::NoFid);
         }
