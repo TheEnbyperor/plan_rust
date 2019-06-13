@@ -162,10 +162,10 @@ pub trait Close: Debug  {
     fn close(&mut self) -> Result<()>;
 }
 
-pub trait RWC: Read + Write + Close + Send {}
+pub trait RWC: Read + Write + Close + Send + Sync {}
 pub trait RWSC: RWC + Seek {}
 
-pub trait FileRWC: Debug {
+pub trait FileRWC: Debug + Sync + Send {
     fn read_at(&mut self, pos: u64, buf: &mut [u8]) -> Result<usize>;
     fn write_at(&mut self, pos: u64, buf: &mut [u8]) -> Result<usize>;
 }
@@ -264,7 +264,7 @@ impl FileRWC for &[u8] {
     }
 }
 
-pub trait NinePServer {
+pub trait NinePServer: Sync + Send {
     fn name(&self) -> &'static str;
     fn description(&self) -> &'static str;
 

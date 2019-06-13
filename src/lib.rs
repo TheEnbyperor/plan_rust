@@ -26,10 +26,12 @@ pub mod gdt;
 pub mod tar;
 pub mod initrd;
 pub mod nine_p;
+pub mod dev;
+pub mod namespace;
 
 use core::panic::PanicInfo;
 use memory::heap_allocator::Allocator;
-use nine_p::NinePServer;
+use alloc::boxed::Box;
 
 pub fn hlt_loop() -> ! {
     loop {
@@ -39,12 +41,14 @@ pub fn hlt_loop() -> ! {
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
+    x86_64::instructions::interrupts::disable();
     println!("{}", info);
     hlt_loop();
 }
 
 #[alloc_error_handler]
 fn alloc_error(info: core::alloc::Layout) -> ! {
+    x86_64::instructions::interrupts::disable();
     println!("Allocation failed: {:?}", info);
     hlt_loop();
 }
@@ -106,16 +110,23 @@ pub extern "C" fn rust_start(multiboot_information_p: usize) -> ! {
     enable_write_protect_bit();
 
     let init_rd = init(multiboot_information_p);
+    let init_rd_server = initrd::InitRDServer::new("/", "initrd", init_rd);
 
-    let mut init_rd_server = initrd::InitRDServer::new("/", "initrd", init_rd);
+    dev::insert_dev_driver("/", Box::new(init_rd_server));
 
-    println!("{:?}", init_rd_server.attach(1, nine_p::NO_FID, "q", ""));
-    println!("{:?}", init_rd_server.walk(1, 2, &[]));
-    println!("{:?}", init_rd_server.open(1, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
-    println!("{:?}", init_rd_server.read(1, 0, 1000));
-    println!("{:?}", init_rd_server.walk(2, 3, &["test"]));
-    println!("{:?}", init_rd_server.open(3, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
-    println!("{:?}", init_rd_server.read(3, 0, 1000));
+    let mut root_namespace = namespace::Namespace::new();
+
+    root_namespace.bind("/", "#/");
+
+    let mut init_rd_server = dev::get_dev_driver("/").unwrap();
+
+    println!("{:?}", init_rd_server.write().attach(1, nine_p::NO_FID, "q", ""));
+    println!("{:?}", init_rd_server.write().walk(1, 2, &[]));
+    println!("{:?}", init_rd_server.write().open(1, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
+    println!("{:?}", init_rd_server.write().read(1, 0, 1000));
+    println!("{:?}", init_rd_server.write().walk(2, 3, &["test"]));
+    println!("{:?}", init_rd_server.write().open(3, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
+    println!("{:?}", init_rd_server.write().read(3, 0, 1000));
 
     println!("It did not crash");
     hlt_loop();
