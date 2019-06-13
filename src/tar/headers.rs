@@ -4,7 +4,7 @@ use core::convert;
 
 pub const TAR_BLOCKSIZE: u64 = 512;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TarHeader {
     pub name: String,
     pub mode: usize,
@@ -24,7 +24,7 @@ pub struct TarHeader {
     pub ctime: Option<usize>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum FileType {
     Regular,
     HardLink,

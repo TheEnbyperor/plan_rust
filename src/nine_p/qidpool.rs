@@ -2,10 +2,12 @@ use alloc::collections;
 use alloc::borrow::ToOwned;
 use byteorder::{NetworkEndian, ByteOrder};
 use alloc::string::String;
+use alloc::sync::Arc;
+use spin::RwLock;
 
 pub type QidRaw = [u8; 13];
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Qid {
     qid_type: QidType,
     version: u32,
@@ -46,38 +48,45 @@ bitflags! {
 }
 
 #[derive(Debug)]
-pub struct Pool {
+struct _Pool {
     m: collections::BTreeMap<String, Qid>,
     path: u64,
 }
 
+#[derive(Debug, Clone)]
+pub struct Pool(Arc<RwLock<_Pool>>);
+
 impl Pool {
     pub fn new() -> Self {
-        Self {
+        Self(Arc::new(RwLock::new(_Pool {
             m: collections::BTreeMap::new(),
             path: 0,
-        }
+        })))
     }
 
-    pub fn put(&mut self, name: &str, qtype: QidType) -> &Qid {
-        let path = self.path;
-        self.path += 1;
+    pub fn put(&self, name: &str, qtype: QidType) -> Qid {
+        let mut i = self.0.write();
+        let path = i.path;
+        i.path += 1;
 
         let qid: Qid = Qid::new(qtype, 0, path);
 
-        if self.m.contains_key(name) {
-            return self.m.get(name).unwrap();
+        if i.m.contains_key(name) {
+            return *i.m.get(name).unwrap();
         } else {
-            self.m.insert(name.to_owned(), qid);
-            self.m.get(name).unwrap()
+            i.m.insert(name.to_owned(), qid);
+            *i.m.get(name).unwrap()
         }
     }
 
-    pub fn del(&mut self, name: &str) {
-        self.m.remove(name);
+    pub fn del(&self, name: &str) {
+        self.0.write().m.remove(name);
     }
 
-    pub fn get(&self, name: &str) -> Option<&Qid> {
-        self.m.get(name)
+    pub fn get(& self, name: &str) -> Option<Qid> {
+        match self.0.read().m.get(name) {
+            Some(q) => Some(*q),
+            None => None
+        }
     }
 }

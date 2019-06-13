@@ -106,13 +106,16 @@ pub extern "C" fn rust_start(multiboot_information_p: usize) -> ! {
     enable_write_protect_bit();
 
     let init_rd = init(multiboot_information_p);
-    init_rd.dump();
 
     let mut init_rd_server = initrd::InitRDServer::new("/", "initrd", init_rd);
 
-    println!("{:?}", init_rd_server.auth(1, "q", ""));
     println!("{:?}", init_rd_server.attach(1, nine_p::NO_FID, "q", ""));
+    println!("{:?}", init_rd_server.walk(1, 2, &[]));
     println!("{:?}", init_rd_server.open(1, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
+    println!("{:?}", init_rd_server.read(1, 0, 1000));
+    println!("{:?}", init_rd_server.walk(2, 3, &["test"]));
+    println!("{:?}", init_rd_server.open(3, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
+    println!("{:?}", init_rd_server.read(3, 0, 1000));
 
     println!("It did not crash");
     hlt_loop();
