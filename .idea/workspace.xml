@@ -9,19 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79afd78b-68f4-44e2-ba6a-9e18dd2e04b1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/initrd/dir_reader.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/initrd/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kernel-x86_64.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/kernel-x86_64.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/os-x86_64.iso" beforeDir="false" afterPath="$PROJECT_DIR$/build/os-x86_64.iso" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/initrd.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nine_p/dir.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/nine_p/dir.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nine_p/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/nine_p/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nine_p/qidpool.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/nine_p/qidpool.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tar/headers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tar/headers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tar/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tar/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x86_64-none.json" beforeDir="false" afterPath="$PROJECT_DIR$/x86_64-none.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -67,8 +56,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/initrd/mod.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="98">
-              <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="8" selection-end-column="20" />
+            <state relative-caret-position="742">
+              <caret line="188" column="40" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
               <folding>
                 <element signature="e#881#882#0" expanded="true" />
                 <element signature="e#925#926#0" expanded="true" />
@@ -87,17 +76,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/initrd/dir_reader.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="30" column="25" lean-forward="true" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+            <state relative-caret-position="84">
+              <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
               <folding>
                 <element signature="e#1961#1962#0" expanded="true" />
                 <element signature="e#1982#1983#0" expanded="true" />
                 <element signature="e#2078#2079#0" expanded="true" />
                 <element signature="e#2099#2100#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor>
+                <caret column="36" lean-forward="true" selection-start-column="36" selection-end-column="36" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -218,6 +219,7 @@
         <option value="$PROJECT_DIR$/src/initrd.rs" />
         <option value="$PROJECT_DIR$/src/initrd/mod.rs" />
         <option value="$PROJECT_DIR$/src/initrd/dir_reader.rs" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -344,12 +346,12 @@
       <workItem from="1560065678556" duration="41613000" />
       <workItem from="1560150906232" duration="21454000" />
       <workItem from="1560181131119" duration="17713000" />
-      <workItem from="1560246130919" duration="53432000" />
+      <workItem from="1560246130919" duration="54121000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="134270000" />
+    <option name="totallyTimeSpent" value="134959000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1181" extended-state="6" />
@@ -579,8 +581,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/initrd/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="98">
-          <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="8" selection-end-column="20" />
+        <state relative-caret-position="742">
+          <caret line="188" column="40" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
           <folding>
             <element signature="e#881#882#0" expanded="true" />
             <element signature="e#925#926#0" expanded="true" />
@@ -600,14 +602,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/initrd/dir_reader.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="30" column="25" lean-forward="true" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+        <state relative-caret-position="84">
+          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
           <folding>
             <element signature="e#1961#1962#0" expanded="true" />
             <element signature="e#1982#1983#0" expanded="true" />
             <element signature="e#2078#2079#0" expanded="true" />
             <element signature="e#2099#2100#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor>
+            <caret column="36" lean-forward="true" selection-start-column="36" selection-end-column="36" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
