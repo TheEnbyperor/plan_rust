@@ -21,38 +21,42 @@ fn tar_to_qid(tar_type: tar::headers::FileType) -> nine_p::qidpool::QidType {
 }
 
 #[derive(Debug)]
-pub struct InitRD {
+pub struct InitRD<'a> {
+    headers: Option<Vec<tar::TarEntry<'a>>>,
     start: VirtAddr,
-    end: VirtAddr,
+    end: VirtAddr
 }
 
-impl<'a> InitRD {
+impl<'a> InitRD<'a> {
     pub fn new(start: VirtAddr, end: VirtAddr) -> Self {
         Self {
+            headers: None,
             start,
-            end,
+            end
         }
     }
 
-    fn size(&self) -> u64 {
-        return self.end - self.start;
-    }
-
     fn data(&self) -> &'a [u8] {
-        unsafe { slice::from_raw_parts(self.start.as_ptr(), self.size() as usize) }
+        unsafe { slice::from_raw_parts(self.start.as_ptr(), (self.end - self.start) as usize) }
     }
 
-    fn headers(&self) -> Vec<tar::TarEntry<'a>> {
-        tar::find_headers(self.data())
+    fn headers(&mut self) -> Vec<tar::TarEntry<'a>> {
+        if let Some(h) = &self.headers {
+            return h.clone()
+        }
+        self.headers = Some(tar::find_headers(self.data()));
+        self.headers.clone().unwrap()
     }
 
-    pub fn dump(&self) {
+    pub fn dump(&mut self) {
         println!("{:?}", self.headers());
     }
 
-    fn list_dir(&self, path: &str) -> Vec<tar::TarEntry<'a>> {
+    fn list_dir(&mut self, path: &str) -> Vec<tar::TarEntry<'a>> {
         if path == "/" {
-            self.headers().into_iter().filter(|entry| !entry.header().name.contains("/")).collect()
+            self.headers().into_iter()
+                .filter(|entry| !entry.header().name.contains("/"))
+                .collect()
         } else {
             self.headers().into_iter().filter(|entry| {
                 let h = entry.header();
@@ -68,7 +72,7 @@ impl<'a> InitRD {
         }
     }
 
-    pub fn stat(&self, path: &str) -> Option<tar::TarEntry<'a>> {
+    pub fn stat(&mut self, path: &str) -> Option<tar::TarEntry<'a>> {
         if path == "/" {
             unimplemented!();
         } else {
@@ -86,8 +90,8 @@ impl<'a> InitRD {
 
 #[derive(Debug)]
 pub struct InitRDServer<'a> {
-    init_rd: InitRD,
-    name: &'static str,
+    init_rd: InitRD<'a>,
+    name: char,
     description: &'static str,
     session_fid: collections::BTreeMap<nine_p::Fid, nine_p::Session>,
     qid_pool: nine_p::qidpool::Pool,
@@ -95,7 +99,7 @@ pub struct InitRDServer<'a> {
 }
 
 impl<'a> InitRDServer<'a> {
-    pub fn new(name: &'static str, description: &'static str, init_rd: InitRD) -> Self {
+    pub fn new(name: char, description: &'static str, init_rd: InitRD<'a>) -> Self {
         Self {
             init_rd,
             name,
@@ -130,7 +134,7 @@ impl<'a> InitRDServer<'a> {
 }
 
 impl<'a> nine_p::NinePServer for InitRDServer<'a> {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> char {
         self.name
     }
 

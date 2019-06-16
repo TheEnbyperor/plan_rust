@@ -16,7 +16,7 @@ use crate::println;
 use crate::initrd;
 use core::convert::TryInto;
 
-pub fn init(boot_info: BootInformation) -> initrd::InitRD {
+pub fn init<'a>(boot_info: BootInformation) -> initrd::InitRD<'a> {
     assert_has_not_been_called!("memory::init must be called only once");
 
     let memory_map_tag = boot_info.memory_map_tag()
@@ -93,8 +93,8 @@ pub fn init(boot_info: BootInformation) -> initrd::InitRD {
     }
 
     initrd::InitRD::new(
-        initrd_start_page.start_address(),
-        initrd_start_page.start_address() + initrd_size
+        VirtAddr::new(INITRD_START as u64),
+        VirtAddr::new((INITRD_START + initrd_size) as u64)
     )
 }
 

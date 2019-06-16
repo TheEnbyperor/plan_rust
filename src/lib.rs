@@ -80,7 +80,7 @@ fn enable_write_protect_bit() {
     };
 }
 
-pub fn init(multiboot_information_p: usize) -> initrd::InitRD {
+pub fn init<'a>(multiboot_information_p: usize) -> initrd::InitRD<'a> {
     vga::WRITER.lock().clear_screen();
     println!("Starting planRust");
     let boot_info = unsafe { multiboot2::load(multiboot_information_p) };
@@ -110,23 +110,30 @@ pub extern "C" fn rust_start(multiboot_information_p: usize) -> ! {
     enable_write_protect_bit();
 
     let init_rd = init(multiboot_information_p);
-    let init_rd_server = initrd::InitRDServer::new("/", "initrd", init_rd);
+    let init_rd_server = initrd::InitRDServer::new('/', "initrd", init_rd);
 
-    dev::insert_dev_driver("/", Box::new(init_rd_server));
+    dev::insert_dev_driver(Box::new(init_rd_server));
 
     let mut root_namespace = namespace::Namespace::new();
 
     root_namespace.bind("/", "#/");
 
-    let mut init_rd_server = dev::get_dev_driver("/").unwrap();
+    let root = root_namespace.open_file("#/").unwrap();
 
-    println!("{:?}", init_rd_server.write().attach(1, nine_p::NO_FID, "q", ""));
-    println!("{:?}", init_rd_server.write().walk(1, 2, &[]));
-    println!("{:?}", init_rd_server.write().open(1, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
-    println!("{:?}", init_rd_server.write().read(1, 0, 1000));
-    println!("{:?}", init_rd_server.write().walk(2, 3, &["test"]));
-    println!("{:?}", init_rd_server.write().open(3, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
-    println!("{:?}", init_rd_server.write().read(3, 0, 1000));
+    let root_fid = root.0.fid_pool().get_fid();
+    println!("{:?}", root.0.server().lock().walk(root.1, root_fid, &[]));
+    println!("{:?}", root.0.server().lock().open(root_fid, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
+    println!("{:?}", root.0.server().lock().read(root_fid, 0, 1000));
+    println!("{:?}", root.0.server().lock().clunk(root_fid));
+    root.0.fid_pool().clunk_fid(root_fid);
+    drop(root_fid);
+    let test_fid = root.0.fid_pool().get_fid();
+    println!("{:?}", root.0.server().lock().walk(root.1, test_fid, &["test"]));
+    println!("{:?}", root.0.server().lock().open(test_fid, &nine_p::FileMode::new(nine_p::FileAccessMode::Read, false, false)));
+    println!("{:?}", root.0.server().lock().read(test_fid, 0, 1000));
+    println!("{:?}", root.0.server().lock().clunk(test_fid));
+    root.0.fid_pool().clunk_fid(test_fid);
+    drop(test_fid);
 
     println!("It did not crash");
     hlt_loop();

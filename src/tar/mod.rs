@@ -1,7 +1,6 @@
 pub mod headers;
 use core::slice;
 use alloc::vec::Vec;
-use alloc::borrow::ToOwned;
 use self::headers::TAR_BLOCKSIZE;
 
 #[derive(Debug, Clone)]
@@ -20,15 +19,15 @@ impl<'a> TarEntry<'a> {
 }
 
 pub fn find_headers(data: &[u8]) -> Vec<TarEntry> {
+    let mut data = data;
     if data.len() % (TAR_BLOCKSIZE as usize) != 0 {
         panic!("wrong length for tar file");
     }
-    let mut data: &mut [u8] = &mut data.to_owned();
 
     let mut header_blocks = Vec::new();
     let mut contiguous_empty_blocks = 0;
     while contiguous_empty_blocks < 2 {
-        let chunk = data.split_at_mut(TAR_BLOCKSIZE as usize);
+        let chunk = data.split_at(TAR_BLOCKSIZE as usize);
         data = chunk.1;
         let chunk = chunk.0;
         let mut chunk_a: [u8; TAR_BLOCKSIZE as usize] = [0; TAR_BLOCKSIZE as usize];
@@ -39,7 +38,7 @@ pub fn find_headers(data: &[u8]) -> Vec<TarEntry> {
                 let data_start = data.as_ptr();
                 while readcount < header.size as u64 {
                     readcount += TAR_BLOCKSIZE;
-                    let chunk = data.split_at_mut(TAR_BLOCKSIZE as usize);
+                    let chunk = data.split_at(TAR_BLOCKSIZE as usize);
                     data = chunk.1;
                 }
                 let data_slice = unsafe { slice::from_raw_parts(data_start, header.size as usize) };

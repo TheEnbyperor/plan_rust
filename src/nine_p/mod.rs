@@ -265,7 +265,7 @@ impl FileRWC for &[u8] {
 }
 
 pub trait NinePServer: Sync + Send {
-    fn name(&self) -> &'static str;
+    fn name(&self) -> char;
     fn description(&self) -> &'static str;
 
     fn init(&self) {}
